@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>napdx · Blue & White</title>
+  <meta name="description" content="唯美白蓝色调的简洁主页" />
+  <style>
+    :root{
+      --bg1:#f6fbff;
+      --bg2:#eaf4ff;
+      --ink:#0c2a4a;
+      --muted:#4a6a87;
+      --blue:#3a86ff;
+      --blue2:#7cc7ff;
+      --card:rgba(255,255,255,.72);
+      --stroke:rgba(58,134,255,.14);
+      --shadow: 0 22px 60px rgba(12,42,74,.10);
+      --shadow2: 0 10px 24px rgba(12,42,74,.08);
+      --radius: 22px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "PingFang SC", "Noto Sans SC", "Microsoft Yahei", sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 420px at 18% 12%, rgba(124,199,255,.30), transparent 60%),
+        radial-gradient(760px 460px at 82% 18%, rgba(58,134,255,.18), transparent 60%),
+        radial-gradient(820px 520px at 50% 96%, rgba(124,199,255,.18), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
+    }
+
+    /* 漂浮柔光 */
+    .glow{
+      position:fixed; inset:auto;
+      width:420px; height:420px;
+      border-radius:50%;
+      filter: blur(50px);
+      opacity:.35;
+      pointer-events:none;
+      mix-blend-mode: soft-light;
+      z-index:0;
+    }
+    .glow.g1{left:-120px; top:120px; background: radial-gradient(circle, rgba(124,199,255,.9), transparent 65%)}
+    .glow.g2{right:-160px; top:40px; background: radial-gradient(circle, rgba(58,134,255,.55), transparent 65%)}
+    .glow.g3{left:22%; bottom:-220px; background: radial-gradient(circle, rgba(124,199,255,.65), transparent 65%)}
+
+    .wrap{
+      position:relative;
+      z-index:1;
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 28px 18px 80px;
+    }
+
+    /* 顶部导航 */
+    .nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 12px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(255,255,255,.6);
+      box-shadow: var(--shadow2);
+      backdrop-filter: blur(10px);
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:700;
+      letter-spacing:.4px;
+    }
+    .dot{
+      width:12px; height:12px; border-radius:50%;
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      box-shadow: 0 10px 24px rgba(58,134,255,.28);
+    }
+    .nav a{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:14px;
+      padding:10px 12px;
+      border-radius: 999px;
+      transition: .2s ease;
+    }
+    .nav a:hover{
+      background: rgba(58,134,255,.08);
+      color:var(--ink);
+    }
+    .nav-right{display:flex; gap:4px; align-items:center}
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      background: linear-gradient(135deg, rgba(58,134,255,.12), rgba(124,199,255,.18));
+      border:1px solid rgba(58,134,255,.16);
+      color: var(--ink);
+      text-decoration:none;
+      font-size:14px;
+      transition:.2s ease;
+    }
+    .pill:hover{transform: translateY(-1px); box-shadow: 0 14px 28px rgba(12,42,74,.10)}
+    .pill svg{width:16px;height:16px}
+
+    /* Hero */
+    .hero{
+      margin-top: 18px;
+      padding: 44px 22px;
+      border-radius: calc(var(--radius) + 6px);
+      background: linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.50));
+      border: 1px solid rgba(255,255,255,.6);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      position:relative;
+      overflow:hidden;
+    }
+    .hero::before{
+      content:"";
+      position:absolute; inset:-1px;
+      background:
+        radial-gradient(900px 320px at 20% 0%, rgba(124,199,255,.24), transparent 55%),
+        radial-gradient(900px 320px at 80% 8%, rgba(58,134,255,.16), transparent 55%);
+      pointer-events:none;
+    }
+    .hero-grid{
+      position:relative;
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 22px;
+      align-items:center;
+    }
+    @media (max-width: 860px){
+      .hero-grid{grid-template-columns: 1fr}
+    }
+
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: rgba(58,134,255,.06);
+      color: var(--muted);
+      font-size: 13px;
+      width:fit-content;
+    }
+    .kicker .spark{
+      width:10px;height:10px;border-radius:50%;
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      box-shadow: 0 12px 24px rgba(58,134,255,.22);
+    }
+
+    h1{
+      margin: 14px 0 10px;
+      font-size: clamp(34px, 4.2vw, 52px);
+      line-height: 1.05;
+      letter-spacing: -0.6px;
+    }
+    .sub{
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+      max-width: 52ch;
+    }
+    .cta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 18px;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(58,134,255,.18);
+      background: rgba(255,255,255,.62);
+      color: var(--ink);
+      text-decoration:none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: .18s ease;
+      backdrop-filter: blur(10px);
+    }
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(58,134,255,.95), rgba(124,199,255,.95));
+      color: white;
+      border: 1px solid rgba(255,255,255,.35);
+      box-shadow: 0 18px 42px rgba(58,134,255,.22);
+    }
+    .btn:hover{transform: translateY(-1px); box-shadow: 0 16px 34px rgba(12,42,74,.10)}
+    .btn.primary:hover{box-shadow: 0 20px 48px rgba(58,134,255,.28)}
+    .btn svg{width:16px;height:16px}
+
+    /* 右侧装饰卡 */
+    .mini{
+      border-radius: var(--radius);
+      padding: 16px;
+      background: rgba(255,255,255,.58);
+      border: 1px solid rgba(255,255,255,.7);
+      box-shadow: var(--shadow2);
+      backdrop-filter: blur(12px);
+    }
+    .mini .ring{
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at 30% 22%, rgba(124,199,255,.55), transparent 60%),
+        radial-gradient(circle at 72% 36%, rgba(58,134,255,.26), transparent 58%),
+        linear-gradient(135deg, rgba(58,134,255,.10), rgba(255,255,255,.0));
+      border: 1px solid rgba(58,134,255,.14);
+      position:relative;
+      overflow:hidden;
+    }
+    .mini .ring::after{
+      content:"";
+      position:absolute; inset:-60px;
+      background: conic-gradient(from 210deg, rgba(124,199,255,.0), rgba(124,199,255,.30), rgba(58,134,255,.0));
+      animation: spin 10s linear infinite;
+      opacity:.75;
+    }
+    @keyframes spin{to{transform: rotate(360deg)}}
+    .mini p{
+      margin: 12px 2px 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* 内容区 */
+    .section{
+      margin-top: 18px;
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 980px){ .section{grid-template-columns: 1fr 1fr} }
+    @media (max-width: 640px){ .section{grid-template-columns: 1fr} }
+
+    .card{
+      padding: 18px 16px;
+      border-radius: var(--radius);
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.7);
+      box-shadow: var(--shadow2);
+      backdrop-filter: blur(12px);
+      position:relative;
+      overflow:hidden;
+    }
+    .card::before{
+      content:"";
+      position:absolute; inset:-1px;
+      background:
+        radial-gradient(620px 220px at 0% 0%, rgba(124,199,255,.20), transparent 55%),
+        radial-gradient(620px 220px at 100% 10%, rgba(58,134,255,.12), transparent 55%);
+      pointer-events:none;
+      opacity:.9;
+    }
+    .card > *{position:relative}
+    .card h3{
+      margin: 0 0 10px;
+      font-size: 16px;
+      letter-spacing:.2px;
+      display:flex; align-items:center; gap:10px;
+    }
+    .icon{
+      width:34px; height:34px; border-radius: 12px;
+      display:grid; place-items:center;
+      background: linear-gradient(135deg, rgba(58,134,255,.16), rgba(124,199,255,.22));
+      border: 1px solid rgba(58,134,255,.16);
+    }
+    .card p{
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    /* 页脚 */
+    footer{
+      margin-top: 18px;
+      padding: 18px 14px;
+      border-radius: 18px;
+      color: rgba(12,42,74,.58);
+      font-size: 13px;
+      text-align:center;
+      border: 1px dashed rgba(58,134,255,.18);
+      background: rgba(255,255,255,.40);
+      backdrop-filter: blur(10px);
+    }
+
+    /* 小波浪 */
+    .wave{
+      margin-top: 18px;
+      border-radius: var(--radius);
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.65);
+      box-shadow: var(--shadow2);
+      background: rgba(255,255,255,.45);
+      backdrop-filter: blur(12px);
+    }
+    .wave svg{display:block; width:100%; height:auto}
+  </style>
+</head>
+
+<body>
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+  <div class="glow g3"></div>
+
+  <main class="wrap">
+    <header class="nav">
+      <div class="brand">
+        <span class="dot"></span>
+        <span>napdx.indevs.in</span>
+      </div>
+      <nav class="nav-right" aria-label="导航">
+        <a href="#about">关于</a>
+        <a href="#gallery">片刻</a>
+        <a href="#contact">联系</a>
+        <a class="pill" href="#contact" title="Say hi">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          进入
+        </a>
+      </nav>
+    </header>
+
+    <section class="hero" aria-label="首页">
+      <div class="hero-grid">
+        <div>
+          <div class="kicker">
+            <span class="spark"></span>
+            <span>唯美 · 白蓝 · 清透</span>
+          </div>
+
+          <h1>把宁静的蓝<br/>留在纯白的光里</h1>
+
+          <p class="sub">
+            这是一个简单的静态主页模板：轻柔渐变、玻璃质感卡片与淡淡波纹。
+            你可以把它作为个人主页、作品集封面、或项目落地页的起点。
+          </p>
+
+          <div class="cta">
+            <a class="btn primary" href="#about">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              开始探索
+            </a>
+            <a class="btn" href="#contact">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 8l8 6 8-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4 8v10h16V8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              留言联系
+            </a>
+          </div>
+        </div>
+
+        <aside class="mini" aria-label="装饰卡片">
+          <div class="ring" role="img" aria-label="蓝白柔光装饰"></div>
+          <p>
+            小提示：把这里的文案改成你的介绍；或者把右侧换成头像、二维码、作品缩略图。
+          </p>
+        </aside>
+      </div>
+    </section>
+
+    <div class="wave" aria-hidden="true">
+      <svg viewBox="0 0 1200 160" preserveAspectRatio="none">
+        <path d="M0,80 C120,20 240,140 360,80 C480,20 600,140 720,80 C840,20 960,140 1080,80 C1140,50 1170,40 1200,60 L1200,160 L0,160 Z"
+              fill="rgba(58,134,255,.10)"></path>
+        <path d="M0,92 C140,40 260,140 400,92 C540,44 660,140 800,92 C940,44 1060,140 1200,92 L1200,160 L0,160 Z"
+              fill="rgba(124,199,255,.12)"></path>
+      </svg>
+    </div>
+
+    <section class="section" id="about" aria-label="关于">
+      <article class="card">
+        <h3>
+          <span class="icon">☁️</span>
+          清透氛围
+        </h3>
+        <p>白底与淡蓝渐变叠加，配合柔光点缀，整体更像清晨的空气：明亮、轻盈、不刺眼。</p>
+      </article>
+
+      <article class="card" id="gallery">
+        <h3>
+          <span class="icon">🫧</span>
+          片刻画廊
+        </h3>
+        <p>可以把这里替换成你的作品链接、照片墙、文章列表；每一块卡片都是一个“入口”。</p>
+      </article>
+
+      <article class="card">
+        <h3>
+          <span class="icon">✨</span>
+          极简可改
+        </h3>
+        <p>只用一个 HTML 文件就能跑起来。想更唯美？加一张背景图、再放一些诗句即可。</p>
+      </article>
+    </section>
+
+    <footer id="contact" aria-label="联系">
+      想把它上线到 <b>napdx.indevs.in</b>：把本文件命名为 <b>index.html</b>，上传到你的静态托管（GitHub Pages / Netlify / Vercel），再把 DNS 指过去即可。
+      <br />
+      （如需我给你“上线到 GitHub Pages + DNS 记录”精确步骤，也可以继续说）
+    </footer>
+  </main>
+
+  <script>
+    // 平滑滚动（纯前端，不依赖库）
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const id = a.getAttribute('href');
+        const el = document.querySelector(id);
+        if (!el) return;
+        e.preventDefault();
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+</html>
